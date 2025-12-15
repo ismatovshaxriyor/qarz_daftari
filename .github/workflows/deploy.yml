@@ -1,0 +1,41 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+            cd qarz_daftari
+
+            # Git dan yangi kod olish
+            git pull origin main
+
+            # Virtual environment aktivlashtirish va dependencies o'rnatish
+            source venv/bin/activate
+            pip install -r requirements.txt
+
+            # Django buyruqlari
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput
+
+            # Servicelarni qayta ishga tushirish
+            sudo systemctl restart gunicorn
+            sudo systemctl restart telegrambot
+            sudo systemctl status gunicorn --no-pager
+
+            echo "✅ Deploy muvaffaqiyatli!"
