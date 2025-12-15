@@ -102,6 +102,10 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATIFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
