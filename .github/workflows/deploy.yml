@@ -36,7 +36,6 @@ jobs:
             # Servicelarni qayta ishga tushirish
             sudo systemctl restart gunicorn
             sudo systemctl restart telegrambot
-            sudo systemctl status gunicorn --no-pager
             sudo journalctl -u gunicorn -n 50
 
             echo "✅ Deploy muvaffaqiyatli!"
